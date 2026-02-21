@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultimate Partner Fortune</title>
+
+<style>
+body{
+    margin:0;
+    font-family:'Segoe UI',sans-serif;
+    background:linear-gradient(135deg,#141e30,#243b55);
+    color:white;
+    text-align:center;
+    transition:0.5s;
+    overflow:hidden;
+}
+
+.light{
+    background:linear-gradient(135deg,#f6d365,#fda085);
+    color:black;
+}
+
+.container{ margin-top:70px; }
+
+h1{
+    font-size:32px;
+    letter-spacing:3px;
+    animation: glow 1.5s infinite alternate;
+}
+
+@keyframes glow{
+    from{ text-shadow:0 0 10px #fff; }
+    to{ text-shadow:0 0 30px #ff4081; }
+}
+
+input{
+    padding:12px;
+    width:230px;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    text-align:center;
+}
+
+button{
+    margin:10px;
+    padding:12px 25px;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    background:#ff4081;
+    color:white;
+    cursor:pointer;
+}
+
+.result{
+    margin-top:40px;
+    font-size:45px;
+    font-weight:bold;
+    letter-spacing:6px;
+}
+
+.percent{
+    font-size:28px;
+    margin-top:20px;
+}
+
+.bar{
+    width:80%;
+    height:20px;
+    background:#ccc;
+    margin:15px auto;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.fill{
+    height:100%;
+    width:0%;
+    background:#ff1744;
+    transition:1.5s;
+}
+
+.heart{
+    position:absolute;
+    color:#ff1744;
+    animation:floatUp 2s linear forwards;
+}
+
+@keyframes floatUp{
+    0%{transform:translateY(0);opacity:1;}
+    100%{transform:translateY(-200px);opacity:0;}
+}
+
+.firework{
+    position:absolute;
+    width:6px;
+    height:6px;
+    background:yellow;
+    border-radius:50%;
+    animation:explode 1s linear forwards;
+}
+
+@keyframes explode{
+    0%{transform:scale(1);opacity:1;}
+    100%{transform:scale(8);opacity:0;}
+}
+
+.slot{ animation:blink 0.1s infinite; }
+@keyframes blink{
+    0%{opacity:0.4;}50%{opacity:1;}100%{opacity:0.4;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1> ULTIMATE LOVE FORTUNE </h1>
+
+<input type="text" id="nameInput" placeholder="Enter Your Name"><br>
+<button onclick="startDraw()">SPIN NOW</button>
+<button onclick="toggleTheme()">Toggle Theme</button>
+<button onclick="saveImage()">Save Result</button>
+
+<div class="result" id="result"></div>
+
+<div class="percent" id="percentText"></div>
+<div class="bar"><div class="fill" id="fillBar"></div></div>
+</div>
+
+<audio id="drum">
+<source src="https://www.soundjay.com/misc/sounds/drum-roll-1.mp3">
+</audio>
+
+<script>
+
+function createHearts(){
+    for(let i=0;i<20;i++){
+        let h=document.createElement("div");
+        h.className="heart";
+        h.innerHTML="❤";
+        h.style.left=Math.random()*window.innerWidth+"px";
+        h.style.top=(window.innerHeight-50)+"px";
+        document.body.appendChild(h);
+        setTimeout(()=>h.remove(),2000);
+    }
+}
+
+function createFireworks(){
+    for(let i=0;i<15;i++){
+        let f=document.createElement("div");
+        f.className="firework";
+        f.style.left=Math.random()*window.innerWidth+"px";
+        f.style.top=Math.random()*window.innerHeight/2+"px";
+        document.body.appendChild(f);
+        setTimeout(()=>f.remove(),1000);
+    }
+}
+
+function toggleTheme(){
+    document.body.classList.toggle("light");
+}
+
+function startDraw(){
+    const name=document.getElementById("nameInput").value.trim();
+    if(name===""){ alert("Enter your name!"); return; }
+
+    const result=document.getElementById("result");
+    const percentText=document.getElementById("percentText");
+    const fillBar=document.getElementById("fillBar");
+    const drum=document.getElementById("drum");
+
+    drum.currentTime=0;
+    drum.play();
+
+    result.classList.add("slot");
+
+    let letters="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    let spin=setInterval(()=>{
+        result.innerHTML=
+        letters[Math.floor(Math.random()*26)]+"****"+
+        letters[Math.floor(Math.random()*26)];
+    },80);
+
+    setTimeout(()=>{
+        clearInterval(spin);
+        result.classList.remove("slot");
+
+        let upper=name.toUpperCase();
+        let first,last,compat;
+
+        if(upper==="KARAN"){
+            first="A"; last="A"; compat=99;
+        }
+        else if(upper==="JOYDEV"){
+            first="H"; last="I"; compat=98;
+        }
+        else if(upper.startsWith("HIMADRI") || 
+                upper.startsWith("HEMADRI") || 
+                upper.startsWith("HIMADRE")){
+            first="J"; last="V"; compat=78;
+        }
+        else if(upper.startsWith("ANAMIKA")){
+            first="K"; last="N"; compat=89;
+        }
+        else{
+            first=upper.slice(-1);
+            last=upper.charAt(0);
+            compat=Math.floor(Math.random()*36)+60;
+        }
+
+        result.innerHTML=first+"****"+last;
+        percentText.innerHTML="Love Compatibility: "+compat+"%";
+        fillBar.style.width=compat+"%";
+
+        createHearts();
+        createFireworks();
+
+    },3000);
+}
+
+function saveImage(){
+    html2canvas(document.body).then(canvas=>{
+        let link=document.createElement("a");
+        link.download="fortune.png";
+        link.href=canvas.toDataURL();
+        link.click();
+    });
+}
+
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+</body>
+</html>
